@@ -1,6 +1,6 @@
 
 namespace TestNameSpace{
     public void Test(){
-        string name = "Cumhur";
+        string name = "Cumhur2";
     }
 }
