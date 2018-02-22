@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MusyncApi.Models
+namespace musync_api.Models
 {
     public class BaseDbModel
     {
-        string Id { get; set; }
+        public string Id { get; set; }
     }
 }

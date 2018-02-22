@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MusyncApi.Models;
 
-namespace MusyncApi.Models
+namespace musync_api.Models
 {
-    public class TestModel : BaseDbModel
+    public class Test : BaseDbModel
     {
-        private string Name { get; set; }
+        public string Name;
     }
 }

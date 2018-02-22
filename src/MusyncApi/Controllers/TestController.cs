@@ -1,41 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MusyncApi.Models;
+using Musync.Domain.Service;
+using MongoDB.Bson;
+using Musync.Domain.Managers;
+using Musync.Domain.Models;
+using MongoDB.Driver;
+using musync_api.Models;
 
 namespace musync_api.Controllers
 {
+
     [Route("api/Test")]
     public class TestController : Controller
     {
+        TestService service = new Musync.Domain.Service.TestService(new MongoRepository<TestModel>());
+
         [HttpGet]
-        public IEnumerable<TestModel> Get()
+        public IEnumerable<Models.Test> Get()
         {
-            return null;
+            var result = service.GetAll().Select(x => new Models.Test()
+            {
+                Id = x.Id.ToString(),
+                Name = x.Name
+            });
+
+            return result;
         }
 
         [HttpGet("{id}")]
-        public TestModel Get(int id)
+        public ActionResult Get(string id)
         {
-            return null;
+
+            if (string.IsNullOrEmpty(id))
+            {
+                ObjectId objectId = new ObjectId(id);
+
+                var result = service.GetById(objectId);
+                Test test = new Test()
+                {
+                    Id = result.Id.ToString(),
+                    Name = result.Name
+                };
+
+                return Ok(test);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]
-        public void Post([FromBody]TestModel value)
+        public void Insert([FromBody]Test value)
         {
+            if (value != null)
+            {
+                TestModel test = new TestModel()
+                {
+                    Name = value.Name
+                };
+
+                service.Insert(test);
+            }
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]TestModel value)
+        public ActionResult Update(string id, string key, string value)
         {
-        }
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                ObjectId objectId = new ObjectId(id);
+                var update = Builders<TestModel>.Update.Set(key, value);
 
+                var result = service.Update(objectId, update);
+
+                return Ok(result);
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                ObjectId objectId = new ObjectId(id);
+
+                var result = service.DeleteById(objectId);
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+
+            }
         }
     }
+
 }
