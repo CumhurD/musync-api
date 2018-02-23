@@ -7,6 +7,7 @@ using Musync.Domain.Managers;
 using Musync.Domain.Models;
 using MongoDB.Driver;
 using musync_api.Models;
+using Musync_api.Repository.Interfaces;
 
 namespace musync_api.Controllers
 {
@@ -14,12 +15,17 @@ namespace musync_api.Controllers
     [Route("api/Test")]
     public class TestController : Controller
     {
-        TestService service = new Musync.Domain.Service.TestService(new MongoRepository<TestModel>());
+       private ITestRepository _testRepository;
+
+        public TestController(ITestRepository testRepository)
+        {
+            _testRepository = testRepository;
+        }
 
         [HttpGet]
-        public IEnumerable<Models.Test> Get()
+        public IEnumerable<Test> Get()
         {
-            var result = service.GetAll().Select(x => new Models.Test()
+            var result = _testRepository.GetAll().Select(x => new Test()
             {
                 Id = x.Id.ToString(),
                 Name = x.Name
@@ -32,11 +38,12 @@ namespace musync_api.Controllers
         public ActionResult Get(string id)
         {
 
-            if (string.IsNullOrEmpty(id))
+            try
             {
                 ObjectId objectId = new ObjectId(id);
 
-                var result = service.GetById(objectId);
+                var result = _testRepository.GetById(objectId);
+
                 Test test = new Test()
                 {
                     Id = result.Id.ToString(),
@@ -45,13 +52,13 @@ namespace musync_api.Controllers
 
                 return Ok(test);
             }
-            else
+            catch
             {
                 return BadRequest();
             }
         }
 
-        [HttpPost]
+        [HttpPost("Insert")]
         public void Insert([FromBody]Test value)
         {
             if (value != null)
@@ -61,40 +68,46 @@ namespace musync_api.Controllers
                     Name = value.Name
                 };
 
-                service.Insert(test);
+                _testRepository.Insert(test);
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update")]
         public ActionResult Update(string id, string key, string value)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            try
             {
+
                 ObjectId objectId = new ObjectId(id);
+
+                var test = _testRepository.GetById(objectId);
+
                 var update = Builders<TestModel>.Update.Set(key, value);
 
-                var result = service.Update(objectId, update);
+                var result = _testRepository.UpdateById(objectId, update);
 
                 return Ok(result);
 
             }
-            else
+            catch
             {
                 return BadRequest();
             }
+
         }
-        [HttpDelete("{id}")]
+
+        [HttpDelete("Delete")]
         public ActionResult Delete(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            try
             {
                 ObjectId objectId = new ObjectId(id);
 
-                var result = service.DeleteById(objectId);
+                var result = _testRepository.DeleteById(objectId);
 
                 return Ok(result);
             }
-            else
+            catch
             {
                 return BadRequest();
 
