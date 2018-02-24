@@ -11,31 +11,36 @@ namespace musync.api.Repository
 {
     public class TestRepository : BaseMusicRepository, ITestRepository
     {
-        TestService service = new TestService(new MongoRepository<TestModel>());
+        ITestRepository _testRepository;
+
+        public TestRepository(ITestRepository testRepository)
+        {
+            _testRepository = testRepository;
+        }
 
         public DeleteResult DeleteById(ObjectId id)
         {
-            return service.DeleteById(id);
+            return _testRepository.DeleteById(id);
         }
 
         public List<TestModel> GetAll()
         {
-            return service.GetAll().ToList();
+            return _testRepository.GetAll().ToList();
         }
 
         public TestModel GetById(ObjectId id)
         {
-            return service.GetById(id);
+            return _testRepository.GetById(id);
         }
 
         public void Insert(TestModel model)
         {
-            service.Insert(model);
+            _testRepository.Insert(model);
         }
 
         public UpdateResult UpdateById(ObjectId id, UpdateDefinition<TestModel> update)
         {
-            var result = service.UpdateById(id, update);
+            var result = _testRepository.UpdateById(id, update);
 
             return result;
         }
