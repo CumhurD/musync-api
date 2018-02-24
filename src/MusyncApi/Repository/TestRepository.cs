@@ -1,17 +1,13 @@
-﻿using Musync_api.Repository.Interfaces;
-using MusyncApi.Repository;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using musync.api.Repository.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Musync.Domain.Managers;
 using Musync.Domain.Models;
 using Musync.Domain.Service;
-using Musync.Domain.Managers;
-using musync_api.Models;
 
-namespace musync_api.Repository
+namespace musync.api.Repository
 {
     public class TestRepository : BaseMusicRepository, ITestRepository
     {

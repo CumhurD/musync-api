@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MusyncApi\musync-api.csproj" />
+    <ProjectReference Include="..\MusyncApi\musync.api.csproj" />
   </ItemGroup>
 
 </Project>

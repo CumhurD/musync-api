@@ -1,13 +1,9 @@
-﻿using MongoDB.Bson;
+﻿using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Musync.Domain.Models;
-using musync_api.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Musync_api.Repository.Interfaces
+namespace musync.api.Repository.Interfaces
 {
     public interface ITestRepository
     {

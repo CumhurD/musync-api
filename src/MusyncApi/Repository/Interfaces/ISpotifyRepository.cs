@@ -1,5 +1,5 @@
 
-namespace MusyncApi.Repository.Interfaces
+namespace musync.api.Repository.Interfaces
 {
     public interface ISpotifyRepository {
         

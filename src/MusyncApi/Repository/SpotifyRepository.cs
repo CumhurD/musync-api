@@ -1,6 +1,6 @@
-using MusyncApi.Repository.Interfaces;
+using musync.api.Repository.Interfaces;
 
- namespace MusyncApi.Repository
+namespace musync.api.Repository
  {
      public class SpotifyRepository : BaseMusicRepository, ISpotifyRepository
      {

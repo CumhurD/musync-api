@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using musync.api.Models;
+using musync.api.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Musync.Domain.Service;
 using MongoDB.Bson;
-using Musync.Domain.Managers;
-using Musync.Domain.Models;
 using MongoDB.Driver;
-using musync_api.Models;
-using Musync_api.Repository.Interfaces;
+using Musync.Domain.Models;
 
-namespace musync_api.Controllers
+namespace musync.api.Controllers
 {
 
     [Route("api/Test")]
