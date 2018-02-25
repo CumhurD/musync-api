@@ -33,7 +33,7 @@ namespace musync.api.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult Get(string id)
+        public Test Get(string id)
         {
 
             try
@@ -48,11 +48,11 @@ namespace musync.api.Controllers
                     Name = result.Name
                 };
 
-                return Ok(test);
+                return test;
             }
             catch
             {
-                return BadRequest();
+                throw new HttpResponseException();
             }
         }
 
