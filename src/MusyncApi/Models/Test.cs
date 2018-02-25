@@ -1,7 +1,9 @@
 ﻿namespace musync.api.Models
 {
-    public class Test : BaseDbModel
+    public class Test 
     {
+        public ObjectId Id;
+
         public string Name;
     }
 }
