@@ -47,6 +47,7 @@ namespace musync.api.tests.TestControllerTests
             _mockedTestController.Setup(x => x.GetById(objectId)).Returns(testModel);
 
             _testController.Get(objectId).Should().Be(test);
+
         }
     }
 }
