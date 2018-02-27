@@ -1,20 +1,20 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Net;
+using System.Web.Http;
+using FluentAssertions;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Moq;
 using musync.api.Controllers;
-using musync.api.Models;
 using musync.api.Repository.Interfaces;
 using Musync.Domain.Models;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Web.Http;
+
 
 namespace musync.api.tests.TestControllerTests
 {
     [TestFixture]
-    public class When_Get_By_Id
+    public class When_Delete
     {
         private Mock<ITestRepository> _mockedTestRepository;
 
@@ -29,27 +29,13 @@ namespace musync.api.tests.TestControllerTests
         }
 
         [Test]
-        public void Should_Return_Test_Properly()
+        public void Should_Delete_Item()
         {
             ObjectId objectId = new ObjectId();
 
-            string name = "test";
+            _mockedTestRepository.Setup(x => x.DeleteById(objectId)).Returns(new DeleteResult.Acknowledged(1));
 
-            TestModel testModel = new TestModel()
-            {
-                Id = objectId,
-                Name = name
-            };
-
-
-            _mockedTestRepository.Setup(x => x.GetById(objectId)).Returns(testModel);
-
-           var result=_testController.Get(objectId);
-
-            result.Id.Should().Be(objectId);
-
-            result.Name.Should().Be(name);
-
+            _testController.Delete(objectId).DeletedCount.Should().Be(1);
         }
 
         [Test]
@@ -57,11 +43,12 @@ namespace musync.api.tests.TestControllerTests
         {
             ObjectId objectId = new ObjectId();
 
-            _mockedTestRepository.Setup(x => x.GetById(It.IsAny<ObjectId>())).Throws(new Exception());
+            _mockedTestRepository.Setup(x => x.DeleteById(It.IsAny<ObjectId>())).Throws(new Exception());
 
-            var exception = Assert.Throws<HttpResponseException>(() => _testController.Get(objectId));
+            var exception = Assert.Throws<HttpResponseException>(() => _testController.Delete(objectId));
 
             exception.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
     }
 }
+

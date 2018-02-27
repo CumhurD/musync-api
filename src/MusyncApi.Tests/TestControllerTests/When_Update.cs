@@ -1,20 +1,21 @@
 ﻿using FluentAssertions;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Moq;
 using musync.api.Controllers;
-using musync.api.Models;
 using musync.api.Repository.Interfaces;
 using Musync.Domain.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using System.Web.Http;
 
 namespace musync.api.tests.TestControllerTests
 {
     [TestFixture]
-    public class When_Get_By_Id
+    public class When_Update
     {
         private Mock<ITestRepository> _mockedTestRepository;
 
@@ -29,37 +30,32 @@ namespace musync.api.tests.TestControllerTests
         }
 
         [Test]
-        public void Should_Return_Test_Properly()
+        public void Should_Update_Item()
         {
             ObjectId objectId = new ObjectId();
 
-            string name = "test";
+            var key = "name";
 
-            TestModel testModel = new TestModel()
-            {
-                Id = objectId,
-                Name = name
-            };
+            var value = "test";
 
+            _mockedTestRepository.Setup(x => x.UpdateById(It.IsAny<ObjectId>(), It.IsAny<UpdateDefinition<TestModel>>())).Returns(new UpdateResult.Acknowledged(1, 1, objectId));
 
-            _mockedTestRepository.Setup(x => x.GetById(objectId)).Returns(testModel);
-
-           var result=_testController.Get(objectId);
-
-            result.Id.Should().Be(objectId);
-
-            result.Name.Should().Be(name);
-
+            _testController.Update(objectId, key, value).ModifiedCount.Should().Be(1);
         }
+
 
         [Test]
         public void Should_Throw_BadRequest_If_There_Is_A_Exception()
         {
             ObjectId objectId = new ObjectId();
 
-            _mockedTestRepository.Setup(x => x.GetById(It.IsAny<ObjectId>())).Throws(new Exception());
+            var key = "name";
 
-            var exception = Assert.Throws<HttpResponseException>(() => _testController.Get(objectId));
+            var value = "test";
+
+            _mockedTestRepository.Setup(x => x.UpdateById(It.IsAny<ObjectId>(), It.IsAny<UpdateDefinition<TestModel>>())).Throws(new Exception());
+
+            var exception = Assert.Throws<HttpResponseException>(() => _testController.Update(objectId,key,value));
 
             exception.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
