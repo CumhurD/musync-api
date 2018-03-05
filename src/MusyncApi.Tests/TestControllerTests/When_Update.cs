@@ -45,7 +45,7 @@ namespace musync.api.tests.TestControllerTests
 
 
         [Test]
-        public void Should_Throw_BadRequest_If_There_Is_A_Exception()
+        public void Should_Throw_BadRequest_If_There_Is_An_Exception()
         {
             ObjectId objectId = new ObjectId();
 
