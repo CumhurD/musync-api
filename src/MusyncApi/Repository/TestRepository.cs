@@ -8,7 +8,7 @@ using Musync.Domain.Services;
 
 namespace musync.api.Repository
 {
-    public class TestRepository : BaseMusicRepository, ITestRepository
+    public class TestRepository : ITestRepository
     {
         ITestService _testService;
 
