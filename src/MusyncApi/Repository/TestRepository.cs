@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Musync.Domain.Models;
 using Musync.Domain.Services;
+using Musync.Domain.Services.Interfaces;
 
 namespace musync.api.Repository
 {
@@ -24,7 +25,9 @@ namespace musync.api.Repository
 
         public List<TestModel> GetAll()
         {
-            return _testService.GetAll().ToList();
+            //return _testService.GetAll().ToList();
+
+            return null;
         }
 
         public TestModel GetById(ObjectId id)

@@ -1,4 +1,6 @@
-﻿namespace musync.api.Models
+﻿using MongoDB.Bson;
+
+namespace musync.api.Models
 {
     public class Test 
     {

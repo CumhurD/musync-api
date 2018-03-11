@@ -6,45 +6,45 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Musync.Domain.Models;
+using System.Net;
+using System.Web.Http;
 
 namespace musync.api.Controllers
 {
 
-    [Route("api/Test")]
+    [Microsoft.AspNetCore.Mvc.Route("api/Test")]
     public class TestController : Controller
     {
-       private ITestRepository _testRepository;
+        private readonly ITestRepository _testRepository;
 
         public TestController(ITestRepository testRepository)
         {
             _testRepository = testRepository;
+
         }
 
-        [HttpGet]
-        public IEnumerable<Test> Get()
+        [Microsoft.AspNetCore.Mvc.HttpGet]
+        public List<Test> Get()
         {
             var result = _testRepository.GetAll().Select(x => new Test()
             {
-                Id = x.Id.ToString(),
+                Id = x.Id,
                 Name = x.Name
-            });
+            }).ToList();
 
             return result;
         }
 
-        [HttpGet("{id}")]
-        public Test Get(string id)
+        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
+        public Test Get(ObjectId id)
         {
-
             try
             {
-                ObjectId objectId = new ObjectId(id);
-
-                var result = _testRepository.GetById(objectId);
+                var result = _testRepository.GetById(id);
 
                 Test test = new Test()
                 {
-                    Id = result.Id.ToString(),
+                    Id = result.Id,
                     Name = result.Name
                 };
 
@@ -52,65 +52,66 @@ namespace musync.api.Controllers
             }
             catch
             {
-                throw new HttpResponseException();
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
 
-        [HttpPost("Insert")]
-        public void Insert([FromBody]Test value)
+        [Microsoft.AspNetCore.Mvc.HttpPost()]
+        public void Insert([Microsoft.AspNetCore.Mvc.FromBody]Test value)
         {
             if (value != null)
             {
-                TestModel test = new TestModel()
+                try
                 {
-                    Name = value.Name
-                };
+                    TestModel testModel = new TestModel()
+                    {
+                        Name = value.Name
+                    };
 
-                _testRepository.Insert(test);
+                    _testRepository.Insert(testModel);
+                }
+                catch
+                {
+
+                    throw new HttpResponseException(HttpStatusCode.BadRequest);
+                }
+
             }
         }
 
-        [HttpPut("Update")]
-        public ActionResult Update(string id, string key, string value)
+        [Microsoft.AspNetCore.Mvc.HttpPut()]
+        public UpdateResult Update(ObjectId id, string key, string value)
         {
             try
             {
-
-                ObjectId objectId = new ObjectId(id);
-
-                var test = _testRepository.GetById(objectId);
 
                 var update = Builders<TestModel>.Update.Set(key, value);
 
-                var result = _testRepository.UpdateById(objectId, update);
+                var result = _testRepository.UpdateById(id, update);
 
-                return Ok(result);
+                return result;
 
             }
             catch
             {
-                return BadRequest();
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
-
         }
 
-        [HttpDelete("Delete")]
-        public ActionResult Delete(string id)
+        [Microsoft.AspNetCore.Mvc.HttpDelete()]
+        public DeleteResult Delete(ObjectId id)
         {
             try
             {
-                ObjectId objectId = new ObjectId(id);
+                var result = _testRepository.DeleteById(id);
 
-                var result = _testRepository.DeleteById(objectId);
-
-                return Ok(result);
+                return result;
             }
             catch
             {
-                return BadRequest();
-
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
     }
-
 }
+
