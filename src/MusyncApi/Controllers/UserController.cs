@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -28,94 +29,117 @@ namespace musync.api.Controllers
 
         }
 
-        //[Microsoft.AspNetCore.Mvc.HttpGet]
-        //public List<UserVM> Get()
-        //{
-        //    var result = _userRepository.GetAll();
+        [Microsoft.AspNetCore.Mvc.HttpGet]
+        public List<UserVM> Get()
+        {
+            return _userRepository.GetAll().Select(x => new UserVM
+            {
+                id = x.Id,
+                DisplayName = x.DisplayName,
+                Birthdate = x.Birthdate,
+                Password = x.Password,
+                Country = x.Country,
+                EmailAdress = x.EmailAdress
+            }).ToList();
+
+        }
 
 
 
-        //    result.GetEnumerator();
-        //    return result;
-        //}
+        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
+        public UserVM Get(ObjectId id)
+        {
+            try
+            {
+                var result = _userRepository.GetById(id);
 
-        //[Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
-        //public Test Get(ObjectId id)
-        //{
-        //    try
-        //    {
-        //        var result = _userRepository.GetById(id);
+                UserVM user = new UserVM()
+                {
+                    id = result.Id,
+                    Birthdate = result.Birthdate,
+                    Password = result.Password,
+                    EmailAdress = result.EmailAdress,
+                    Country = result.Country,
+                    DisplayName = result.DisplayName
+                };
 
-        //        Test test = new Test()
-        //        {
-        //            Id = result.Id,
-        //            Name = result.Name
-        //        };
+                return user;
+            }
+            catch
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+        }
 
-        //        return test;
-        //    }
-        //    catch
-        //    {
-        //        throw new HttpResponseException(HttpStatusCode.BadRequest);
-        //    }
-        //}
+        [Microsoft.AspNetCore.Mvc.HttpPost()]
+        public void Insert([Microsoft.AspNetCore.Mvc.FromBody]UserVM value)
+        {
+            if (value != null)
+            {
+                try
+                {
+                    User user = new User()
+                    {
+                        DisplayName = value.DisplayName,
+                        Password = value.Password,
+                        EmailAdress = value.EmailAdress,
+                        Country = value.Country,
+                        Birthdate = value.Birthdate
+                    };
 
-        //[Microsoft.AspNetCore.Mvc.HttpPost()]
-        //public void Insert([Microsoft.AspNetCore.Mvc.FromBody]Test value)
-        //{
-        //    if (value != null)
-        //    {
-        //        try
-        //        {
-        //            TestModel testModel = new TestModel()
-        //            {
-        //                Name = value.Name
-        //            };
+                    _userRepository.Insert(user);
+                }
+                catch
+                {
 
-        //            _userRepository.Insert(testModel);
-        //        }
-        //        catch
-        //        {
+                    throw new HttpResponseException(HttpStatusCode.BadRequest);
+                }
 
-        //            throw new HttpResponseException(HttpStatusCode.BadRequest);
-        //        }
+            }
+        }
 
-        //    }
-        //}
+        [Microsoft.AspNetCore.Mvc.HttpPut()]
+        public long Delete(ObjectId id)
+        {
+            try
+            {
+                return _userRepository.Delete(id);
+            }
+            catch
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
 
-        //[Microsoft.AspNetCore.Mvc.HttpPut()]
-        //public UpdateResult Update(ObjectId id, string key, string value)
-        //{
-        //    try
-        //    {
+        }
 
-        //        var update = Builders<TestModel>.Update.Set(key, value);
+        [Microsoft.AspNetCore.Mvc.HttpDelete()]
+        public long SuperDelete(ObjectId id)
+        {
+            try
+            {
+                return _userRepository.SuperDelete(id);
+            }
+            catch
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+        }
 
-        //        var result = _userRepository.UpdateById(id, update);
+        [Microsoft.AspNetCore.Mvc.HttpPut()]
+        public long Update(ObjectId id, string oldPassword, string newPassword)
+        {
+            if (String.IsNullOrWhiteSpace(oldPassword) || String.IsNullOrWhiteSpace(newPassword))
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-        //        return result;
 
-        //    }
-        //    catch
-        //    {
-        //        throw new HttpResponseException(HttpStatusCode.BadRequest);
-        //    }
-
-        //}
-
-        //[Microsoft.AspNetCore.Mvc.HttpDelete()]
-        //public DeleteResult Delete(ObjectId id)
-        //{
-        //    try
-        //    {
-        //        var result = _userRepository.DeleteById(id);
-
-        //        return result;
-        //    }
-        //    catch
-        //    {
-        //        throw new HttpResponseException(HttpStatusCode.BadRequest);
-        //    }
-        //}
+            try
+            {
+                return _userRepository.ChangePassword(id, oldPassword, newPassword);
+            }
+            catch
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+        }
     }
 }
