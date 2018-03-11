@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using musync.api.Repository;
 using musync.api.Repository.Interfaces;
 using Musync.Domain.Services;
+using Musync.Domain.Services.Interfaces;
 
 namespace musync.api
 {
