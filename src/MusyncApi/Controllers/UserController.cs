@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using musync.api.Models;
+using musync.api.Repository;
 using musync.api.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,9 @@ namespace musync.api.Controllers
     [Microsoft.AspNetCore.Mvc.Route("api/User")]
     public class UserController : Controller
     {
-        private readonly IUserService _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserController(IUserService userRepository)
+        public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
 
@@ -43,7 +44,6 @@ namespace musync.api.Controllers
             }).ToList();
 
         }
-
 
 
         [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
@@ -126,7 +126,7 @@ namespace musync.api.Controllers
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPut()]
-        public long Update(ObjectId id, string oldPassword, string newPassword)
+        public long ChangePassword(ObjectId id, string oldPassword, string newPassword)
         {
             if (String.IsNullOrWhiteSpace(oldPassword) || String.IsNullOrWhiteSpace(newPassword))
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
