@@ -35,7 +35,7 @@ namespace musync.api.Controllers
         {
             return _userRepository.GetAll().Select(x => new UserVM
             {
-                id = x.Id,
+                Id = x.Id,
                 DisplayName = x.DisplayName,
                 Birthdate = x.Birthdate,
                 Password = x.Password,
@@ -55,7 +55,7 @@ namespace musync.api.Controllers
 
                 UserVM user = new UserVM()
                 {
-                    id = result.Id,
+                    Id = result.Id,
                     Birthdate = result.Birthdate,
                     Password = result.Password,
                     EmailAdress = result.EmailAdress,
@@ -72,30 +72,30 @@ namespace musync.api.Controllers
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPost()]
-        public void Insert([Microsoft.AspNetCore.Mvc.FromBody]UserVM value)
+        public short Insert([Microsoft.AspNetCore.Mvc.FromBody]UserVM value)
         {
-            if (value != null)
+            if (value == null)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+            try
             {
-                try
+                User user = new User()
                 {
-                    User user = new User()
-                    {
-                        DisplayName = value.DisplayName,
-                        Password = value.Password,
-                        EmailAdress = value.EmailAdress,
-                        Country = value.Country,
-                        Birthdate = value.Birthdate
-                    };
+                    DisplayName = value.DisplayName,
+                    Password = value.Password,
+                    EmailAdress = value.EmailAdress,
+                    Country = value.Country,
+                    Birthdate = value.Birthdate
+                };
 
-                    _userRepository.Insert(user);
-                }
-                catch
-                {
-
-                    throw new HttpResponseException(HttpStatusCode.BadRequest);
-                }
-
+                return _userRepository.Insert(user);
             }
+            catch
+            {
+
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPut()]
@@ -103,7 +103,7 @@ namespace musync.api.Controllers
         {
             try
             {
-                return _userRepository.Delete(id);
+                return _userRepository.DeleteById(id);
             }
             catch
             {
@@ -130,7 +130,6 @@ namespace musync.api.Controllers
         {
             if (String.IsNullOrWhiteSpace(oldPassword) || String.IsNullOrWhiteSpace(newPassword))
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
-
 
             try
             {
