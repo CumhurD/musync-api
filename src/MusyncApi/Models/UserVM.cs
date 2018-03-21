@@ -8,7 +8,7 @@ namespace musync.api.Models
 {
     public class UserVM
     {
-        public ObjectId id { get; set; }
+        public ObjectId Id { get; set; }
 
         public string DisplayName { get; set; }
 
