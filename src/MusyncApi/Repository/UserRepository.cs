@@ -14,7 +14,7 @@ namespace musync.api.Repository
 {
     public class UserRepository : IUserRepository
     {
-        IUserService _userService;
+        private readonly IUserService _userService;
 
         public UserRepository(IUserService userService)
         {

@@ -11,7 +11,7 @@ namespace musync.api.Repository
 {
     public class SongRepository : ISongRepository
     {
-        ISongService _songService;
+        private readonly ISongService _songService;
 
         public SongRepository(ISongService songService)
         {
