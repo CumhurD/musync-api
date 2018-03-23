@@ -21,12 +21,12 @@ namespace musync.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc();
+            services.AddMvc();
 
-            //services.AddSingleton<ITestRepository, TestRepository>();
-            //services.AddSingleton<ITestService, TestService>();
-
-
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<ISongRepository, SongRepository>();
+            services.AddSingleton<ISongService, SongService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
