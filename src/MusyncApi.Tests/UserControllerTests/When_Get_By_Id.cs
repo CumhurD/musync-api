@@ -44,7 +44,7 @@ namespace musync.api.tests.UserControllerTests
         }
 
         [Test]
-        public void Should_Return_List_UserVM_Properly()
+        public void Should_Return_UserVM_Properly()
         {
             ObjectId id = new ObjectId();
 
